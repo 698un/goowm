@@ -5,13 +5,32 @@ import (
 	//"math"
 
 	"net/http"
-	"strconv"
+	//"strconv"
 
-	"github.com/698un/owmcalcgo/cnfg"
-	"github.com/698un/owmcalcgo/entity"
+	"cnfg"
+	//"github.com/698un/owmcalcgo/entity"
 	//"github.com/698un/owmcalcgo/mymath"
 )
 
+func StartServer() {
+
+	fmt.Println("Server Init on port ", cnfg.PortNumber)
+
+	//TODO
+	//ADD link fabric
+
+	//REGISTER HELP SITE
+	reqHelpRegister()
+
+	//STAR_SEVER
+	err := http.ListenAndServe(cnfg.PortNumber, nil)
+	if err != nil {
+		fmt.Println("Error_ServerNotStart")
+	}
+
+}
+
+/*
 func StartServer() {
 
 	fmt.Println("Server Init...")
@@ -99,3 +118,4 @@ func reqJsonInfo(r *http.Request) string {
 
 	return res
 }
+*/

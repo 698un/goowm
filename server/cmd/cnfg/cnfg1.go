@@ -4,8 +4,8 @@ import (
 	"fmt"
 )
 
-var PathCash string = "cash" //folder of cash from OWM
-var PortNum = "8090"         //port number of NetControl
+var PathCash string = "cashowm" //folder of cash from OWM
+var PortNumber = ":8090"        //port number of NetControl
 
 func CnfgTest() {
 	fmt.Println("Config is launch")

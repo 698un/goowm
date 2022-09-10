@@ -17,7 +17,7 @@ func main() {
 
 	fmt.Println("Start OWM server...")
 
-	netcontrol.NetControlStart()
+	netcontrol.StartServer()
 
 	fmt.Println("The end")
 

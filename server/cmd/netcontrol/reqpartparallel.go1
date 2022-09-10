@@ -1,0 +1,109 @@
+package netcontrol
+
+import (
+	"fmt"
+	//"math"
+
+	"net/http"
+	"strconv"
+
+	//"github.com/698un/owmcalcgo/cnfg"
+
+	"github.com/698un/owmcalcgo/entity"
+	//"github.com/698un/owmcalcgo/mymath"
+)
+
+//ReqJsonPartParallel
+// /partparallel/{angY}/{angx1}/{angx2}/{resolution}/{actualTime}
+
+func reqJsonPartParallel(r *http.Request) string {
+	var angX float64
+	var angY float64
+	var angX1 float64
+	var angX2 float64
+	var actualTime int64
+	var resolution int
+	var str1 string
+
+	fmt.Println("FULL_PARELLEL")
+
+	//Default error
+	var res string = "{\"Error\":true}"
+
+	//Parse angY
+	str1 = r.URL.Query().Get("angy")
+	if str1 == "" {
+		return res
+	}
+	angY, err := strconv.ParseFloat(str1, 64)
+	if err != nil {
+		return res
+	}
+
+	//Parse angX1
+	str1 = r.URL.Query().Get("angx1")
+	if str1 == "" {
+		return res
+	}
+	angX1, err1 := strconv.ParseFloat(str1, 64)
+	if err1 != nil {
+		return res
+	}
+
+	//Parse angX2
+	str1 = r.URL.Query().Get("angx2")
+	if str1 == "" {
+		return res
+	}
+	angX2, err2 := strconv.ParseFloat(str1, 64)
+	if err2 != nil {
+		return res
+	}
+
+	//Parse resolution
+	str1 = r.URL.Query().Get("resolution")
+	if str1 == "" {
+		return res
+	}
+	resolution32, err1 := strconv.ParseInt(str1, 0, 32)
+	if err1 != nil {
+		return res
+	}
+
+	resolution = int(resolution32)
+
+	//Parse ACTUAL
+	str1 = r.URL.Query().Get("actual")
+	if str1 == "" {
+		actualTime = 10000 //very long time if error
+	}
+	actualTime, err3 := strconv.ParseInt(str1, 0, 64)
+	if err3 != nil {
+		actualTime = 10000 //very long time if error
+	}
+
+	//print parameters
+	fmt.Println("angY=", angY,
+		" angX1=", angX1,
+		" angX2=", angX2,
+		" res=", resolution,
+		" actual=", actualTime)
+
+	res = "["
+	for i := 0; i < resolution; i++ {
+
+		angX = angX1 + float64(i)/float64(resolution)*(angX2-angX1)
+		//fmt.Println("angx=", angX)
+		res = res + entity.GetJsonStr(angX, angY, actualTime)
+		if i < resolution-1 {
+			res = res + ","
+		}
+	}
+	res += "]"
+
+	//get jsonStr from DA`O
+	//res = entity.GetJsonStr(angX, angY, actualTime)
+	//fmt.Println(res)
+
+	return res
+}

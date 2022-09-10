@@ -1,0 +1,83 @@
+package netcontrol
+
+import (
+	"fmt"
+	//"math"
+
+	"net/http"
+	"strconv"
+
+	//"github.com/698un/owmcalcgo/cnfg"
+
+	"github.com/698un/owmcalcgo/entity"
+	//"github.com/698un/owmcalcgo/mymath"
+)
+
+//ReqJsonParallel
+// /parallel/{angY}/{resolution}/{actualTime}
+
+func reqJsonParallel(r *http.Request) string {
+	var angX float64
+	var angY float64
+	var actualTime int64
+	var resolution int
+	var str1 string
+
+	fmt.Println("FULL_PARELLEL")
+
+	//Default error
+	var res string = "{\"Error\":true}"
+
+	//Parse angY
+	str1 = r.URL.Query().Get("angy")
+	if str1 == "" {
+		return res
+	}
+	angY, err := strconv.ParseFloat(str1, 64)
+	if err != nil {
+		return res
+	}
+
+	//Parse resolution
+	str1 = r.URL.Query().Get("resolution")
+	if str1 == "" {
+		return res
+	}
+	resolution32, err1 := strconv.ParseInt(str1, 0, 32)
+	if err1 != nil {
+		return res
+	}
+
+	resolution = int(resolution32)
+
+	//Parse ACTUAL
+	str1 = r.URL.Query().Get("actual")
+	if str1 == "" {
+		actualTime = 10000 //very long time if error
+	}
+	actualTime, err2 := strconv.ParseInt(str1, 0, 64)
+	if err2 != nil {
+		actualTime = 10000 //very long time if error
+	}
+
+	//print parameters
+	fmt.Println("angY=", angY, " res=", resolution, " actual=", actualTime)
+
+	res = "["
+	for i := 0; i < resolution; i++ {
+
+		angX = -180.0 + float64(i)/float64(resolution)*360.0
+		//fmt.Println("angx=", angX)
+		res = res + entity.GetJsonStr(angX, angY, actualTime)
+		if i < resolution-1 {
+			res = res + ","
+		}
+	}
+	res += "]"
+
+	//get jsonStr from DA`O
+	//res = entity.GetJsonStr(angX, angY, actualTime)
+	//fmt.Println(res)
+
+	return res
+}

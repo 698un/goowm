@@ -4,7 +4,7 @@ go 1.18
 
 //CONFIG unit
 replace cnfg => /cnfg
-require cnfg v0.0.0-00010101000000-000000000000 // indirect
+//require cnfg v0.0.0-00010101000000-000000000000 // indirect
 
 
 //modules of math
